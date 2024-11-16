@@ -8,7 +8,8 @@ The best place to start is always the beginnig.
 
 ---
 
-## The first thing we need is a test we want to pass.
+## The basics
+### The first thing we need is a test we want to pass.
 
 ``` swift
 import Testing
@@ -47,7 +48,7 @@ This just tests that we can make an empty database and insert a record into it.
 
 Of course just adding that to our tests files, pretty much every one of those lines will fail, so let's attempt to start getting rid of those errors.
 
-## The beginnings of the =AppDatabase= class.
+### The beginnings of the =AppDatabase= class.
 
 ``` swift
 import Foundation
@@ -82,7 +83,7 @@ final class AppDatabase: Sendable {
 }
 ```
 
-## AppDatabase =makeConfiguration= function
+### AppDatabase =makeConfiguration= function
 
 ``` swift
 extension AppDatabase {
@@ -92,7 +93,7 @@ extension AppDatabase {
 }
 ```
 
-##  `Player` model
+###  `Player` model
 
 ``` swift
 import GRDB
@@ -104,7 +105,7 @@ struct Player: Equatable {
 }
 ```
 
-## Necessary player conformance
+### Necessary player conformance
 
 In our first test, we wish to be able to save a player to our database, so we need the type to conform to `Codable` `FetchableRecord` and `MutablePersistableRecord`.  This also defines our table columns and gives us the `didInsert` function.
 
@@ -121,7 +122,7 @@ extension Player: Codable, FetchableRecord, MutablePersistableRecord {
 }
 ```
 
-## Last error to clear, we need a reader
+### Last error to clear, we need a reader
 
 ``` swift
 let fetchedPlayer = try appDatabase.reader.read(Player.fetchOne) // Value of type 'AppDatabase' has no member 'reader'
@@ -134,7 +135,7 @@ private func makeEmptyTestDatabase() throws -> AppDatabase {
 }
 ```
 
-## Our tests pass
+### Our tests pass
 Our original tests are now passing and we've gained the following capabilities:
 
 1. Make a (empty) database
@@ -157,6 +158,5 @@ try appDatabase.savePlayer(&insertedPlayer)
 let fetchedPlayer = try appDatabase.reader.read(Player.fetchOne)
 ```
 
-MORE STUFF!
 
 ---
