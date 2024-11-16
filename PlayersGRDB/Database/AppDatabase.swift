@@ -41,6 +41,13 @@ extension AppDatabase {
             try player.save(db)
         }
     }
+    
+    /// Delete all players
+    func deleteAllPlayers() throws {
+        try dbWriter.write { db in
+            _ = try Player.deleteAll(db)
+        }
+    }
 }
 
 extension AppDatabase {

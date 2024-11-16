@@ -160,3 +160,64 @@ let fetchedPlayer = try appDatabase.reader.read(Player.fetchOne)
 
 
 ---
+
+
+## Tests to update a database and delete all `Player` records
+### Update test
+
+This added and passed immediately
+
+``` swift
+    @Test func update() throws {
+        // Given a database that contains a player
+        let appDatabase = try makeEmptyTestDatabase()
+        var insertedPlayer = Player(name: "Arthur", score: 1000)
+        try appDatabase.savePlayer(&insertedPlayer)
+        
+        // When we update a player
+        var updatedPlayer = insertedPlayer
+        updatedPlayer.name = "Barbara"
+        updatedPlayer.score = 0
+        try appDatabase.savePlayer(&updatedPlayer)
+        
+        // Then the player is updated
+        let fetchedPlayer = try appDatabase.reader.read(Player.fetchOne)
+        #expect(fetchedPlayer == updatedPlayer)
+    }
+```
+
+### Delete All test
+
+Here we run into a bit of a snafu because haven't defined `delteAllPlayers`
+``` swift
+    @Test func deleteAll() throws {
+        // Given a database that contains a player
+        let appDatabase = try makeEmptyTestDatabase()
+        var player = Player(name: "Arthur", score: 1000)
+        try appDatabase.savePlayer(&player)
+        
+        // When we delete all players
+        try appDatabase.deleteAllPlayers() //Value of type 'AppDatabase' has no member 'deleteAllPlayers'
+        
+        // Then no player exists
+        let count = try appDatabase.reader.read(Player.fetchCount(_:))
+        #expect(count == 0)
+    }
+```
+
+So, all we have to do is add it to our `AppDatabase` type in the extension code block that has `savePlayer`
+
+``` swift
+extension AppDatabase {
+    
+    ...
+
+    /// Delete all players
+    func deleteAllPlayers() throws {
+        try dbWriter.write { db in
+            _ = try Player.deleteAll(db)
+        }
+    }
+}
+```
+
