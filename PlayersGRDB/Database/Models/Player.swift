@@ -16,3 +16,18 @@ extension Player: Codable, FetchableRecord, MutablePersistableRecord {
         id = inserted.rowID
     }
 }
+
+// Convenience access to player columns in this file
+private typealias Columns = Player.Columns
+
+extension DerivableRequest<Player> {
+    func orderedByName() -> Self {
+        order(Columns.name.collating(.localizedCaseInsensitiveCompare))
+    }
+    
+    func orderedByScore() -> Self {
+        order(
+            Columns.score.desc,
+            Columns.name.collating(.localizedCaseInsensitiveCompare))
+    }
+}
